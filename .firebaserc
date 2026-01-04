@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "dev": "fyn-timing-dev",
+    "staging": "fyn-timing-staging",
+    "prod": "fyn-timing-prod"
+  }
+}
