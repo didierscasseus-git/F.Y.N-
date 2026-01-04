@@ -114,3 +114,36 @@ model TableStateEvent {
 
   table         Table    @relation(fields: [tableId], references: [id])
 }
+
+model MenuItem {
+  id                    String   @id @default(uuid())
+  name                  String
+  price                 Float
+  status                String   // EightySixStateEnum
+  activeIngredientSetId String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  eightySixEvents       EightySixEvent[]
+}
+
+model InventoryItem {
+  id               String   @id @default(uuid())
+  name             String
+  currentStock     Float
+  reorderThreshold Float
+  unit             String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model EightySixEvent {
+  id         String   @id @default(uuid())
+  menuItemId String
+  status     String
+  reason     String
+  actorId    String
+  timestamp  DateTime @default(now())
+
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+}
