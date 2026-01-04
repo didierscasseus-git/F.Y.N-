@@ -1,6 +1,5 @@
 import { AuditLog, AuditLogSchema } from '../schema';
-import { v4 as uuidv4 } from 'uuid';
-import { AppError, ErrorCodes } from '../errors/AppError';
+import prisma from '../prisma';
 
 export class AuditService {
     private static instance: AuditService;
@@ -14,23 +13,24 @@ export class AuditService {
         return AuditService.instance;
     }
 
-    public log(entry: Omit<AuditLog, 'id' | 'timestamp'>): void {
-        const logEntry: AuditLog = {
-            id: uuidv4(),
-            timestamp: new Date().toISOString(),
-            ...entry
+    public async log(entry: Omit<AuditLog, 'id' | 'timestamp'>): Promise<void> {
+        // We use Prisma's auto-generation for IDs and Timestamps if possible, 
+        // but our schema has id as String and timestamp as DateTime.
+
+        const logEntryData = {
+            ...entry,
+            beforeState: entry.beforeState ? JSON.stringify(entry.beforeState) : null,
+            afterState: entry.afterState ? JSON.stringify(entry.afterState) : null
         };
 
-        // Validate Schema
-        const validation = AuditLogSchema.safeParse(logEntry);
-        if (!validation.success) {
-            console.error('[AuditService] Schema Validation Failed:', validation.error);
-            // We do not throw here to prevent crashing the main flow, but we log the error
-            return;
+        try {
+            await prisma.auditLog.create({
+                data: logEntryData
+            });
+            console.log(`[AUDIT] logged ${entry.action} on ${entry.entity} (${entry.entityId})`);
+        } catch (error) {
+            console.error('[AuditService] Failed to persist log:', error);
         }
-
-        // In a real implementation, this would write to DB
-        // For V1 MVP local dev, we write to Console
-        console.log(`[AUDIT] [${logEntry.timestamp}] [${logEntry.role}] ${logEntry.action} on ${logEntry.entity} (${logEntry.entityId}):`, logEntry.reasonCode || '');
     }
 }
+

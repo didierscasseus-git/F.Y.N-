@@ -7,3 +7,5 @@ build/
 coverage/
 tmp/
 .vscode/
+
+/src/generated/prisma

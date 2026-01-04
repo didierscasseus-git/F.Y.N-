@@ -25,6 +25,7 @@
     "author": "FYN Tech",
     "license": "UNLICENSED",
     "dependencies": {
+        "@prisma/client": "^5.10.0",
         "cors": "^2.8.5",
         "date-fns": "^3.3.1",
         "dotenv": "^16.4.1",
@@ -45,6 +46,7 @@
         "@types/uuid": "^9.0.8",
         "jest": "^29.7.0",
         "nodemon": "^3.0.3",
+        "prisma": "^5.10.0",
         "supertest": "^7.1.4",
         "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2",

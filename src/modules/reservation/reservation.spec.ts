@@ -1,12 +1,28 @@
 import request from 'supertest';
 import app from '../../server';
 import { v4 as uuidv4 } from 'uuid';
+import prisma from '../../core/prisma';
 
 describe('Reservation Module Integration', () => {
 
     const HOST_ID = uuidv4();
-    const GUEST_ID = uuidv4();
+    let GUEST_ID: string;
     let reservationId: string;
+
+    beforeAll(async () => {
+        // Create a guest for the reservation to link to
+        const guestRes = await request(app)
+            .post('/api/v1/guests')
+            .set('x-user-id', HOST_ID)
+            .set('x-role', 'HOST')
+            .send({ name: 'Reservation Test Guest' });
+
+        GUEST_ID = guestRes.body.data.id;
+    });
+
+    afterAll(async () => {
+        await prisma.$disconnect();
+    });
 
     it('POST /api/v1/reservations creates a booking', async () => {
         const res = await request(app)
@@ -46,3 +62,4 @@ describe('Reservation Module Integration', () => {
         expect(res.status).toBe(403);
     });
 });
+

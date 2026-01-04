@@ -1,10 +1,16 @@
 import request from 'supertest';
 import app from '../../server';
 import { v4 as uuidv4 } from 'uuid';
+import prisma from '../../core/prisma';
 
 describe('Guest Module Integration', () => {
 
+    afterAll(async () => {
+        await prisma.$disconnect();
+    });
+
     it('GET /health returns 200', async () => {
+
         const res = await request(app).get('/health');
         expect(res.status).toBe(200);
         expect(res.body.status).toBe('ONLINE');

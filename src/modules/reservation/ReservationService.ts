@@ -1,59 +1,62 @@
-import { Reservation, ReservationSchema, Role, ReservationStatusEnum } from '../../core/schema';
+import { Reservation, ReservationSchema, Role } from '../../core/schema';
 import { AuditService } from '../../core/audit/AuditService';
 import { AppError, ErrorCodes } from '../../core/errors/AppError';
+import prisma from '../../core/prisma';
 import { v4 as uuidv4 } from 'uuid';
 
 export class ReservationService {
-    private static reservations: Map<string, Reservation> = new Map();
     private audit = AuditService.getInstance();
 
-    constructor() {
-        // Seed
-        if (ReservationService.reservations.size === 0) {
-            const id = '22222222-2222-2222-2222-222222222222';
-            ReservationService.reservations.set(id, {
-                id,
-                guestId: '11111111-1111-1111-1111-111111111111',
-                partySize: 2,
-                reservationTime: new Date().toISOString(),
-                duration: 'STD_90',
-                status: 'BOOKED',
-                source: 'WEB',
-                tags: []
-            });
-        }
-    }
-
     public async get(id: string, actorRole: Role, actorId: string): Promise<Reservation> {
-        const res = ReservationService.reservations.get(id);
-        if (!res) throw new AppError('Reservation not found', ErrorCodes.NOT_FOUND, 404);
+        const resData = await prisma.reservation.findUnique({
+            where: { id }
+        });
 
-        // RBAC: Guest can view own reservation using GuestID linkage?
-        // Not implemented in V1 yet fully, assuming ID access for now.
+        if (!resData) throw new AppError('Reservation not found', ErrorCodes.NOT_FOUND, 404);
+
+        // Map DB record to Reservation schema
+        const res: Reservation = {
+            ...resData,
+            reservationTime: resData.reservationTime.toISOString(),
+            createdAt: resData.createdAt.toISOString(),
+            updatedAt: resData.updatedAt.toISOString(),
+            tags: JSON.parse(resData.tags)
+        } as Reservation;
 
         return res;
     }
 
     public async create(data: any, actorRole: Role, actorId: string): Promise<Reservation> {
-        const cleanData = {
+        const validation = ReservationSchema.safeParse({
             id: uuidv4(),
-            status: 'BOOKED', // Default
-            tags: [],
+            status: 'BOOKED',
+            tags: data.tags || [],
             ...data
-        };
+        });
 
-        const validation = ReservationSchema.safeParse(cleanData);
         if (!validation.success) {
             throw new AppError('Invalid Reservation Data', ErrorCodes.VALIDATION_ERROR, 400);
         }
-        const newRes = validation.data;
 
-        // Strict Linkage Check (Mocked for V1 - Assume Guest exists)
-        // In V2, check GuestService.get(newRes.guestId)
+        const validRes = validation.data;
 
-        ReservationService.reservations.set(newRes.id, newRes);
+        const newResData = await prisma.reservation.create({
+            data: {
+                ...validRes,
+                reservationTime: new Date(validRes.reservationTime),
+                tags: JSON.stringify(validRes.tags)
+            }
+        });
 
-        this.audit.log({
+        const newRes: Reservation = {
+            ...newResData,
+            reservationTime: newResData.reservationTime.toISOString(),
+            createdAt: newResData.createdAt.toISOString(),
+            updatedAt: newResData.updatedAt.toISOString(),
+            tags: JSON.parse(newResData.tags)
+        } as Reservation;
+
+        await this.audit.log({
             actorId, role: actorRole,
             action: 'CREATE', entity: 'Reservation', entityId: newRes.id,
             source: 'MANUAL',
@@ -63,29 +66,40 @@ export class ReservationService {
         return newRes;
     }
 
-    // State Transitions
     public async checkIn(id: string, actorRole: Role, actorId: string): Promise<Reservation> {
         // Only Host/Staff
         if (!['HOST', 'SERVER', 'MANAGER', 'ADMIN'].includes(actorRole)) {
             throw new AppError('Only staff can check in guests', ErrorCodes.FORBIDDEN, 403);
         }
 
-        const res = await this.get(id, actorRole, actorId);
-        if (res.status !== 'BOOKED') {
-            throw new AppError(`Cannot check-in from state ${res.status}`, ErrorCodes.CONFLICT, 409);
+        const current = await this.get(id, actorRole, actorId);
+        if (current.status !== 'BOOKED') {
+            throw new AppError(`Cannot check-in from state ${current.status}`, ErrorCodes.CONFLICT, 409);
         }
 
-        const updated = { ...res, status: 'ARRIVED' as const };
-        ReservationService.reservations.set(id, updated);
+        const updatedData = await prisma.reservation.update({
+            where: { id },
+            data: { status: 'ARRIVED' }
+        });
 
-        this.audit.log({
+        const updated: Reservation = {
+            ...updatedData,
+            reservationTime: updatedData.reservationTime.toISOString(),
+            createdAt: updatedData.createdAt.toISOString(),
+            updatedAt: updatedData.updatedAt.toISOString(),
+            tags: JSON.parse(updatedData.tags)
+        } as Reservation;
+
+        await this.audit.log({
             actorId, role: actorRole,
             action: 'UPDATE', entity: 'Reservation', entityId: id,
             source: 'MANUAL',
-            beforeState: res, afterState: updated,
+            beforeState: current,
+            afterState: updated,
             reasonCode: 'CHECK_IN'
         });
 
         return updated;
     }
 }
+

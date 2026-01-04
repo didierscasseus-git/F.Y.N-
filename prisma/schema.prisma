@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+
+// --- ENUMS ---
+
+// Note: SQLite does not support native Enums. We will use Strings and validate in App layer (Zod).
+
+// --- MODELS ---
+
+model GuestProfile {
+  id           String   @id @default(uuid())
+  name         String
+  phoneNumber  String?
+  email        String?
+  visitCount   Int      @default(0)
+  vipStatus    Boolean  @default(false)
+  optOut       Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  reservations Reservation[]
+  allergies    GuestAllergy[]
+}
+
+model GuestAllergy {
+  id         String @id @default(uuid())
+  guestId    String
+  allergen   String
+  severity   String // MILD, MODERATE, SEVERE, LIFE_THREATENING
+  verifiedBy String // Staff ID
+
+  guest      GuestProfile @relation(fields: [guestId], references: [id])
+}
+
+model Reservation {
+  id              String   @id @default(uuid())
+  guestId         String
+  partySize       Int
+  reservationTime DateTime
+  duration        String   @default("STD_90") // SHORT_60, STD_90, LONG_120
+  status          String   // BOOKED, ARRIVED, SEATED, COMPLETED, CANCELLED, NO_SHOW
+  notes           String?
+  source          String   // PHONE, WEB, WALK_IN
+  tags            String   // JSON string or comma-separated for SQLite
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  guest           GuestProfile @relation(fields: [guestId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  timestamp  DateTime @default(now())
+  actorId    String
+  role       String
+  action     String
+  entity     String
+  entityId   String
+  beforeState String? // JSON
+  afterState  String? // JSON
+  source     String
+  reasonCode String?
+}
