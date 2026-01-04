@@ -3,6 +3,9 @@
     "version": "1.3.26",
     "description": "F.Y.N Timing Operating System",
     "main": "dist/index.js",
+    "engines": {
+        "node": "18"
+    },
     "scripts": {
         "start": "node dist/server.js",
         "dev": "nodemon src/server.ts",
