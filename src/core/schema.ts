@@ -41,6 +41,12 @@ export const EightySixStateEnum = z.enum([
     'EIGHTY_SIXED'
 ]);
 
+export const ReservationDurationEnum = z.enum([
+    'SHORT_60',
+    'STD_90',
+    'LONG_120'
+]);
+
 export const SourceEnum = z.enum([
     'MANUAL',
     'POS',
@@ -75,6 +81,7 @@ export const ReservationSchema = z.object({
     guestId: z.string().uuid(),
     partySize: z.number().int().positive(),
     reservationTime: z.string().datetime(),
+    duration: ReservationDurationEnum.default('STD_90'),
     status: ReservationStatusEnum,
     notes: z.string().optional(),
     source: z.enum(['PHONE', 'WEB', 'WALK_IN']),

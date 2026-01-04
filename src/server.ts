@@ -6,6 +6,8 @@ import { Request, Response, NextFunction } from 'express';
 import { AppError } from './core/errors/AppError';
 import { guestRoutes } from './modules/guest/guest.routes';
 
+import { reservationRoutes } from './modules/reservation/reservation.routes';
+
 dotenv.config();
 
 const app = express();
@@ -16,8 +18,9 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Mount Modules
 app.use('/api/v1/guests', guestRoutes);
+app.use('/api/v1/reservations', reservationRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {
