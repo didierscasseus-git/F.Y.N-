@@ -1,7 +1,7 @@
 {
   "projects": {
-    "dev": "fyn-timing-dev",
-    "staging": "fyn-timing-staging",
-    "prod": "fyn-timing-prod"
+    "dev": "fyn-timing-os-dev",
+    "staging": "fyn-timing-os-staging",
+    "prod": "fyn-timing-os-prod"
   }
 }
