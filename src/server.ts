@@ -10,6 +10,7 @@ import { reservationRoutes } from './modules/reservation/reservation.routes';
 import { waitlistRoutes } from './modules/waitlist/waitlist.routes';
 import { tableRoutes } from './modules/table/table.routes';
 import { menuRoutes } from './modules/menu/menu.routes';
+import { orderRoutes } from './modules/order/order.routes';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use('/api/v1/reservations', reservationRoutes);
 app.use('/api/v1/waitlist', waitlistRoutes);
 app.use('/api/v1/tables', tableRoutes);
 app.use('/api/v1/menu', menuRoutes);
+app.use('/api/v1/orders', orderRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

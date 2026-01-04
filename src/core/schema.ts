@@ -60,7 +60,22 @@ export const WaitlistStatusEnum = z.enum([
     'NOTIFIED',
     'SEATED',
     'POPPED',
+    'POPPED',
     'CANCELLED'
+]);
+
+export const OrderStatusEnum = z.enum([
+    'OPEN',
+    'IN_PROGRESS',
+    'COMPLETED',
+    'CANCELLED'
+]);
+
+export const OrderItemStatusEnum = z.enum([
+    'PENDING',
+    'FIRED',
+    'SERVED',
+    'VOID'
 ]);
 
 // --- ENTITY SCHEMAS ---
@@ -157,6 +172,29 @@ export const EightySixEventSchema = z.object({
     timestamp: z.string().datetime()
 });
 
+export const OrderItemSchema = z.object({
+    id: z.string().uuid(),
+    orderId: z.string().uuid(),
+    menuItemId: z.string().uuid(),
+    quantity: z.number().int().positive(),
+    price: z.number().nonnegative(),
+    notes: z.string().optional(),
+    status: OrderItemStatusEnum.default('PENDING'),
+    createdAt: z.string().datetime().optional(),
+    updatedAt: z.string().datetime().optional()
+});
+
+export const OrderSchema = z.object({
+    id: z.string().uuid(),
+    tableId: z.string().uuid(),
+    guestId: z.string().uuid().optional(),
+    status: OrderStatusEnum.default('OPEN'),
+    totalAmount: z.number().nonnegative().default(0.0),
+    items: z.array(OrderItemSchema).default([]),
+    createdAt: z.string().datetime().optional(),
+    updatedAt: z.string().datetime().optional()
+});
+
 export const AuditLogSchema = z.object({
     id: z.string().uuid(),
     timestamp: z.string().datetime(),
@@ -184,4 +222,6 @@ export type TableStateEvent = z.infer<typeof TableStateEventSchema>;
 export type MenuItem = z.infer<typeof MenuItemSchema>;
 export type InventoryItem = z.infer<typeof InventoryItemSchema>;
 export type EightySixEvent = z.infer<typeof EightySixEventSchema>;
+export type Order = z.infer<typeof OrderSchema>;
+export type OrderItem = z.infer<typeof OrderItemSchema>;
 export type AuditLog = z.infer<typeof AuditLogSchema>;

@@ -31,6 +31,7 @@ model GuestProfile {
   
   reservations Reservation[]
   waitlistEntries WaitlistEntry[]
+  orders       Order[]
   allergies    GuestAllergy[]
 }
 
@@ -100,7 +101,9 @@ model Table {
   updatedAt      DateTime @updatedAt
 
   stateEvents    TableStateEvent[]
+  orders         Order[]
 }
+
 
 model TableStateEvent {
   id            String   @id @default(uuid())
@@ -125,7 +128,9 @@ model MenuItem {
   updatedAt             DateTime @updatedAt
   
   eightySixEvents       EightySixEvent[]
+  orderItems            OrderItem[]
 }
+
 
 model InventoryItem {
   id               String   @id @default(uuid())
@@ -145,5 +150,34 @@ model EightySixEvent {
   actorId    String
   timestamp  DateTime @default(now())
 
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+}
+
+model Order {
+  id          String   @id @default(uuid())
+  tableId     String
+  guestId     String?
+  status      String   // OPEN, IN_PROGRESS, COMPLETED, CANCELLED
+  totalAmount Float    @default(0.0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items       OrderItem[]
+  table       Table        @relation(fields: [tableId], references: [id])
+  guest       GuestProfile? @relation(fields: [guestId], references: [id])
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  menuItemId String
+  quantity   Int
+  price      Float    // Snapshot of price at time of order
+  notes      String?
+  status     String   // PENDING, FIRED, SERVED, VOID
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  order      Order    @relation(fields: [orderId], references: [id])
   menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
 }
