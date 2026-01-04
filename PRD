@@ -1,0 +1,429 @@
+SECTION 1 — PRODUCT DEFINITION
+
+FYN Timing is a restaurant operating system providing decision-support tooling for:
+
+- Reservations
+- Walk-in waitlists
+- Table management and table state tracking
+- Menu-based timing estimation
+- Guest profiles, preferences, and visit history
+- Allergy and ingredient risk awareness
+- Inventory tracking
+- Sales and staff analytics
+- 3D venue scanning and AR navigation (optional, modular)
+
+SYSTEM CONSTRAINTS:
+- Decision-support only
+- No guarantees
+- No food-safety certification
+- No medical advice
+- No automated employment or disciplinary decisions
+
+SECTION 2 — USER ROLES
+
+DEFINED ROLES:
+- Guest
+- Host
+- Server
+- Kitchen / Expo
+- Manager
+- Admin / Owner
+
+RULES:
+- Strict role-based access control
+- No role may access data outside explicit permission
+- All access is logged
+
+SECTION 3 — CORE ENTITIES (CONCEPTUAL ONLY)
+
+ENTITIES:
+- GuestProfile
+- GuestPreference
+- GuestAllergy
+- GuestVisit
+- Reservation
+- WaitlistEntry
+- Table
+- TableStateEvent
+- MenuItem
+- MenuItemIngredient
+- InventoryItem
+- InventoryAdjustment
+- StaffMember
+- AnalyticsEvent
+- ARScan
+- ARModel
+- ARAnchor
+
+RULES:
+- No entity creation, modification, or deletion without permission validation
+- All entity actions require audit logging
+
+SECTION 4 — GUEST PROFILES
+
+STORED DATA:
+- Name
+- Phone number
+- Email
+- Visit count
+- Visit timestamps
+- Spend data (POS-linked only)
+- Seating preferences
+- Menu preferences
+- Allergy and dietary restrictions
+- VIP indicators
+
+RULES:
+- Guest input allowed during reservation, post-booking, or pre-arrival
+- Guests never see ingredients, analytics, or internal notes
+- Data retention is indefinite by default
+- Guests may opt out or request deletion
+- All access is logged
+
+SECTION 5 — ALLERGY & INGREDIENT SAFETY
+
+INGREDIENT RULES:
+- Each MenuItem has a structured ingredient list
+- Ingredients entered by kitchen staff only
+- Ingredients are staff-only
+- Ingredients tagged with allergen categories
+- Ingredient versions are tracked
+
+ALLERGY RULES:
+- Allergy data is sensitive
+- Explicit consent required
+- Visible only to Server, Kitchen, Manager
+- Never visible to guests
+
+ENFORCEMENT:
+- Menu selection triggers ingredient cross-check
+- Allergen matches trigger alerts
+- Server confirmation mandatory
+- Kitchen acknowledgment mandatory
+- Alerts persist until acknowledged
+- All interactions logged
+
+SECTION 6 — RESERVATIONS
+
+FIELDS:
+- Party size
+- Date and time
+- Guest profile linkage
+- Notes
+
+STATES:
+- Booked
+- Arrived
+- Seated
+- Completed
+- Cancelled
+- No-show
+
+RULES:
+- Grace period: 15 minutes
+- No-show rules must comply with local law
+- Cancellation must be simple and accessible
+
+SECTION 7 — WAITLIST AND WALK-INS
+
+FEATURES:
+- Walk-in creation
+- ETA display
+- Priority flags
+- VIP indicators
+- Notifications (optional)
+
+RULE:
+- ETAs are estimates only
+
+SECTION 8 — TABLES AND STATES
+
+TABLE ATTRIBUTES:
+- Capacity
+- Zone
+- Combination rules
+- Accessibility flags
+
+STATES:
+- Available
+- Reserved
+- Seated
+- Ordered
+- Food in progress
+- Food served
+- Paying
+- Cleaning
+- Out of service
+
+RULES:
+- Controlled transitions
+- Manager override requires audit log
+- No silent state changes
+
+
+SECTION 8A — INTERACTIVE 3D TABLE CONTROL SYSTEM
+
+Each table rendered in the 3D model is an interactive object.
+
+INTERACTION METHODS:
+- Tap / click: open Table Control Card
+- Long-press (mobile) or right-click (desktop): quick status selector
+- Drag: disabled by default; enabled only in Edit Mode for Manager/Admin
+
+TABLE CONTROL CARD INCLUDES:
+- Table ID, capacity, zone
+- Current primary status (authoritative)
+- Suggested status (AI), if available
+- Last 5 TableStateEvents
+- Actions:
+  - Set status (manual)
+  - Apply AI suggestion
+  - Undo last change (time-limited)
+  - Add internal note
+  - Mark Out of Service (manager/admin only)
+
+MANUAL STATUS RULES:
+- Host: Available, Reserved, Arrived, Seated
+- Server: Seated, Ordered, Food Served, Paying, Cleaning
+- Kitchen/Expo: Food in Progress, Food Served
+- Manager/Admin: all statuses
+
+Every manual change must log:
+- actorId
+- role
+- timestamp
+- reasonCode
+
+Manual events create TableStateEvent with source = MANUAL.
+
+SECTION 8B — AUTOMATIC TABLE STATUS RECOGNITION
+
+The system includes a rules-based AI suggestion engine for table status.
+
+PRINCIPLES:
+- One primary state per table
+- Manual state always overrides AI
+- AI never skips invalid transitions
+- AI may suggest or auto-advance depending on configuration
+
+STATE METADATA:
+- currentState
+- stateSource (MANUAL, POS, AI_SUGGESTED, AI_AUTO)
+- stateConfidence
+- evidenceList
+
+ALLOWED TRANSITIONS:
+Available → Reserved
+Reserved → Arrived
+Arrived → Seated
+Seated → Ordered
+Ordered → Food in Progress
+Food in Progress → Food Served
+Food Served → Paying
+Paying → Cleaning
+Cleaning → Available
+Any → Out of Service (manager/admin only)
+
+INPUT SIGNALS:
+- Reservation status events
+- POS order lifecycle events
+- Staff actions
+- Time thresholds
+- Inventory availability
+
+DEFAULT MODE:
+- AI Suggest-Only
+- Auto-advance disabled unless explicitly enabled
+
+CONFLICT HANDLING:
+- Conflicting evidence blocks auto-change
+- Conflict alert requires staff confirmation
+
+SECTION 8C — POS-DRIVEN TABLE BEHAVIOR
+
+If POS integration is enabled, the following events are authoritative signals:
+
+POS EVENTS:
+- Check opened → suggests Seated
+- Order sent to kitchen → suggests Ordered
+- Kitchen accepts ticket → suggests Food in Progress
+- Items marked served → suggests Food Served
+- Check dropped or payment initiated → suggests Paying
+- Payment completed → suggests Cleaning
+
+RULES:
+- POS signals may trigger AI suggestions
+- POS signals may auto-advance only if auto-advance is enabled
+- POS never overrides a manual Out of Service state
+- POS events are logged with source = POS
+
+SECTION 9 — MENU AND TIMING ENGINE
+
+TIMING INPUTS:
+- Menu-item prep time
+- Category fallback
+- Global fallback
+- Daypart modifiers
+- Weekend modifiers
+
+ETA RULES:
+- ETA uses timing + party size + load + overrides
+- Estimates only
+- Confidence level stored
+
+SECTION 10 — INVENTORY
+
+FEATURES:
+- Item definitions
+- Stock levels
+- Threshold alerts
+- Waste tracking
+- Manual adjustments
+- POS-linked depletion (optional)
+
+
+SECTION 10A — MENU ITEM 86 (EIGHTY-SIX) LOGIC
+
+“86” is a binary operational state indicating an item is unavailable.
+
+STATES:
+- AVAILABLE
+- EIGHTY_SIXED
+
+TRIGGER CONDITIONS:
+- currentStockLevel < minimumSellableQuantity
+- requiredIngredient stock insufficient
+- waste or spoilage logged
+- manual staff 86 action
+- POS / inventory mismatch
+
+ON TRIGGER:
+- Generate EightySixEvent
+- Notify Hosts, Servers, Managers
+- Optional temporary order lock (venue-configurable)
+
+STAFF ACTIONS REQUIRED:
+- Confirm 86
+- Override with reason (time-limited)
+- Adjust inventory
+
+EFFECT OF 86ED STATE:
+- Item removed from menus
+- Item blocked from ordering
+- POS blocked (if integrated)
+- Marked unavailable in analytics
+
+UN-86 RULE:
+- All ingredients sufficiently stocked
+- Staff confirmation required
+
+AUTO UN-86 IS DISABLED.
+
+SECTION 11 — ANALYTICS
+
+OPERATIONAL:
+- Wait times
+- Table turns
+- Utilization
+- Prediction accuracy
+
+SALES:
+- Gross sales
+- Net sales
+- Revenue per table
+- Revenue per staff
+
+STAFF RULES:
+- Staff see only their own metrics
+- Managers see aggregates only
+
+
+SECTION 11A — ADD-86 ANALYTICS
+
+The system tracks analytics related to 86 events.
+
+METRICS:
+- Number of 86 events per item
+- Duration of 86 state
+- Time to staff confirmation
+- Overrides vs confirmed 86s
+- Lost sales estimation (POS-based)
+- Inventory accuracy at time of 86
+- Frequency of emergency 86s
+
+REPORTING:
+- Item-level reports
+- Category-level aggregation
+- Shift and daypart breakdowns
+- Manager-only visibility
+
+86 analytics do not affect staff performance scoring.
+
+SECTION 12 — 3D SCANNING AND AR NAVIGATION
+
+SCAN SOURCES:
+A. Parametric room scanning (LiDAR, structured geometry, confidence scores)
+B. Mesh / photogrammetry (photo-based, textured meshes)
+C. External imported models (cloud-generated)
+
+CAPTURE FLOW:
+1. Authorized staff initiates scan
+2. Device scanning session starts
+3. Real-time feedback shown
+4. Scan completed, paused, or rejected
+
+RULES:
+- No automatic acceptance
+- Validation required (coverage, confidence, structure, alignment)
+
+FORMATS:
+- USD / USDZ
+- GLB / GLTF
+- OBJ / FBX (import only)
+
+MODEL MANAGEMENT:
+- Multiple versions allowed
+- One active model
+- Rollback supported
+- Metadata stored (device, method, timestamp)
+
+MAPPING:
+- Tables anchored to model
+- Zones defined spatially
+- IDs must match operational tables
+
+NAVIGATION:
+- Real-time path overlays
+- State color coding
+- Non-literal transparency allowed
+- Advisory only
+
+FALLBACK:
+- Automatic 2D map or text directions
+- AR never blocks operations
+
+PERMISSIONS:
+- Staff-only access
+- Guests never see raw geometry
+
+PERFORMANCE:
+- Graceful degradation
+- No blocking of core workflows
+
+SECTION 13 — SECURITY AND AUDIT
+- Role-based access control
+- Field-level permissions
+- Encryption at rest and in transit
+- Full audit logs
+
+SECTION 14 — DATA AND PRIVACY
+- Indefinite retention by default
+- Opt-out supported
+- Deletion on request
+- Automated outputs disclosed
+- Human override always available
+
+SECTION 15 — MVP LOCK
+- All sections included in MVP
+- AR may be post-MVP
+- Architecture must support AR from day one
