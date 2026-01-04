@@ -116,7 +116,9 @@ export const TableSchema = z.object({
     capacity: z.number().int().positive(),
     currentState: TableStateEnum,
     activeOrderId: z.string().optional(), // POS Link
-    stateUpdatedAt: z.string().datetime()
+    stateUpdatedAt: z.string().datetime(),
+    createdAt: z.string().datetime().optional(),
+    updatedAt: z.string().datetime().optional()
 });
 
 export const TableStateEventSchema = z.object({

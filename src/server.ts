@@ -8,6 +8,7 @@ import { guestRoutes } from './modules/guest/guest.routes';
 
 import { reservationRoutes } from './modules/reservation/reservation.routes';
 import { waitlistRoutes } from './modules/waitlist/waitlist.routes';
+import { tableRoutes } from './modules/table/table.routes';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use('/api/v1/guests', guestRoutes);
 app.use('/api/v1/reservations', reservationRoutes);
 app.use('/api/v1/waitlist', waitlistRoutes);
+app.use('/api/v1/tables', tableRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {
