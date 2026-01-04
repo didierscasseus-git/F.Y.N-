@@ -4,7 +4,7 @@
     "description": "F.Y.N Timing Operating System",
     "main": "dist/index.js",
     "engines": {
-        "node": "18"
+        "node": "22"
     },
     "scripts": {
         "start": "node dist/server.js",
