@@ -30,6 +30,7 @@ model GuestProfile {
   updatedAt    DateTime @updatedAt
   
   reservations Reservation[]
+  waitlistEntries WaitlistEntry[]
   allergies    GuestAllergy[]
 }
 
@@ -71,4 +72,18 @@ model AuditLog {
   afterState  String? // JSON
   source     String
   reasonCode String?
+}
+
+model WaitlistEntry {
+  id                   String   @id @default(uuid())
+  guestId              String
+  partySize            Int
+  checkInTime          DateTime @default(now())
+  status               String   // WAITING, NOTIFIED, SEATED, POPPED, CANCELLED
+  estimatedWaitMinutes Int      @default(0)
+  notes                String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  guest                GuestProfile @relation(fields: [guestId], references: [id])
 }

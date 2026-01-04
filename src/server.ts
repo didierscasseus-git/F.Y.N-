@@ -7,6 +7,7 @@ import { AppError } from './core/errors/AppError';
 import { guestRoutes } from './modules/guest/guest.routes';
 
 import { reservationRoutes } from './modules/reservation/reservation.routes';
+import { waitlistRoutes } from './modules/waitlist/waitlist.routes';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 // Mount Modules
 app.use('/api/v1/guests', guestRoutes);
 app.use('/api/v1/reservations', reservationRoutes);
+app.use('/api/v1/waitlist', waitlistRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

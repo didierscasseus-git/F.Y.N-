@@ -51,7 +51,16 @@ export const SourceEnum = z.enum([
     'MANUAL',
     'POS',
     'AI_SUGGESTED',
+    'AI_SUGGESTED',
     'AI_AUTO'
+]);
+
+export const WaitlistStatusEnum = z.enum([
+    'WAITING',
+    'NOTIFIED',
+    'SEATED',
+    'POPPED',
+    'CANCELLED'
 ]);
 
 // --- ENTITY SCHEMAS ---
@@ -86,6 +95,18 @@ export const ReservationSchema = z.object({
     notes: z.string().optional(),
     source: z.enum(['PHONE', 'WEB', 'WALK_IN']),
     tags: z.array(z.string()).default([])
+});
+
+export const WaitlistEntrySchema = z.object({
+    id: z.string().uuid(),
+    guestId: z.string().uuid(),
+    partySize: z.number().int().positive(),
+    checkInTime: z.string().datetime(),
+    status: WaitlistStatusEnum.default('WAITING'),
+    estimatedWaitMinutes: z.number().int().nonnegative().default(0),
+    notes: z.string().optional(),
+    createdAt: z.string().datetime().optional(),
+    updatedAt: z.string().datetime().optional()
 });
 
 export const TableSchema = z.object({
@@ -155,6 +176,7 @@ export type ReservationStatus = z.infer<typeof ReservationStatusEnum>;
 export type GuestProfile = z.infer<typeof GuestProfileSchema>;
 export type GuestAllergy = z.infer<typeof GuestAllergySchema>;
 export type Reservation = z.infer<typeof ReservationSchema>;
+export type WaitlistEntry = z.infer<typeof WaitlistEntrySchema>;
 export type Table = z.infer<typeof TableSchema>;
 export type TableStateEvent = z.infer<typeof TableStateEventSchema>;
 export type MenuItem = z.infer<typeof MenuItemSchema>;
