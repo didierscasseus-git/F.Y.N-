@@ -9,3 +9,6 @@ tmp/
 .vscode/
 
 /src/generated/prisma
+
+secrets.json
+firebase-*-service-account.json
