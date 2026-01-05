@@ -1,0 +1,108 @@
+# Integrated Architecture Update: Notifications & AR
+
+## Notification Engine V1
+
+*Completed in previous step.*
+
+- **Event Bus**: Added publishing to Table, Reservation, Inventory modules.
+- **Notification Service**: Subscribes to events and generates alerts.
+- **Endpoints**: `/api/v1/notifications` for real-time alerting.
+
+## AR Backend V1
+
+### Overview
+
+We implemented the `AR_SCAN_AND_MODEL_BACKEND_V1` and `AR_TABLE_ZONE_MAPPING_V1`. This module allows the system to store 3D models of the restaurant space and map physical tables to augmented reality anchors (Spatial Anchors).
+
+### Changes
+
+#### 1. Schema & Data Model
+
+- **[ArModel](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/core/schema.ts#288-289)**: Stores metadata for 3D assets (GLB, USDZ).
+- **[ArAnchor](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/core/schema.ts#289-290)**: Maps a `tableId` to a spatial `localTransform` (Matrix4x4) or `cloudAnchorId` (Google Cloud Anchors).
+
+#### 2. AR Service (`src/modules/ar`)
+
+- **Persistence**: Managed via `ar_models` and `ar_anchors` Postgres tables.
+- **Audit Logging**: All creations/updates are audited.
+- **Event Publishing**: Publishes `ANCHOR_CREATED` and `MODEL_UPLOADED` to `ar.events` topic.
+
+#### 3. API Endpoints
+
+- `POST /api/v1/ar/models`: Register a new 3D model.
+- `GET /api/v1/ar/models`: List available models.
+- `POST /api/v1/ar/anchors`: Map a table to an AR anchor.
+- **Permissions**: Requires `MANAGE_AR` (Manager/Admin).
+- `GET /api/v1/ar/anchors`: Retrieve all anchors (for client localization).
+
+#### 4. Security
+
+- Updated **RBAC** to include `MANAGE_AR` permission.
+- Assigned `MANAGE_AR` to `MANAGER` and `ADMIN` roles.
+
+### Verification
+
+#### Automated
+
+- `npm run build`: **Passed**.
+
+#### Manual Verification Steps
+
+1. **Register a Model**:
+
+```bash
+curl -X POST http://localhost:3000/api/v1/ar/models \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Main Dining Room Scan",
+    "url": "https://storage.googleapis.com/.../scan.glb",
+    "format": "GLB"
+  }'
+```
+
+1. **Map a Table (Create Anchor)**:
+
+```bash
+curl -X POST http://localhost:3000/api/v1/ar/anchors \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tableId": "<TABLE_UUID>",
+    "cloudAnchorId": "ua-1234-5678-90ab",
+    "confidence": 0.95
+  }'
+```
+
+1. **Retrieve Anchors (Client)**:
+
+```bash
+curl http://localhost:3000/api/v1/ar/anchors
+```
+
+**Expect**: JSON array of anchors with their transforms/IDs.
+
+---
+
+## Post-Review Optimization (P0 Fixes)
+
+Following the comprehensive code review, we implemented several critical optimizations to ensure production stability and performance.
+
+### 1. Notification Error Boundary
+- **Problem**: A single failed event processing in the Pub/Sub subscriber could crash the entire notification service.
+- **Fix**: Wrapped the subscriber callback in a `try-catch` block with structured logging. Failed events are logged and the subscriber remains active for subsequent events.
+
+### 2. Allergy Crosscheck N+1 Fix
+- **Problem**: `getSafeMenuItems` was fetching ingredients for menu items one-by-one in a loop, causing significant latency for large menus.
+- **Fix**: Implemented `getMenuItemsIngredientsBatch` in `menu.service.ts` to fetch all necessary data in a single SQL query using `ANY($1)`.
+- **Match Improvement**: Replaced broad `.includes()` matching with word-boundary Regex (`\bword\b`) to prevent false positives (e.g., "Egg" matching "Eggplant").
+
+### 3. Server-Side Infrastructure
+- **Global Error Handler**: Standardized unhandled error responses to return JSON instead of HTML, properly mapping `StandardError` types.
+- **404 Handler**: Added a catch-all route to handle unmapped endpoints with consistent JSON formatting.
+- **Log Standardization**: Replaced legacy `console.log` statements in `AuditService`, `OrderService`, and `WaitlistService` with the standard structured `Logger`.
+
+### Verification Results
+- **Build**: `npm run build` executed successfully (Exit Code: 0).
+- **Type Safety**: All optimizations verified against TypeScript strict mode.
+

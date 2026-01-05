@@ -1,8 +1,11 @@
 import { Order, OrderSchema, OrderStatusEnum, OrderItemSchema, OrderItemStatusEnum, Role } from '../../core/schema';
 import { AuditService } from '../../core/audit/AuditService';
 import { AppError, ErrorCodes } from '../../core/errors/AppError';
+import { createLogger } from '../../core/logger';
 import prisma from '../../core/prisma';
 import { v4 as uuidv4 } from 'uuid';
+
+const logger = createLogger('ORDER_SERVICE');
 
 export class OrderService {
     private audit = AuditService.getInstance();
@@ -90,7 +93,7 @@ export class OrderService {
         const mapped = this.mapToOrder(updatedOrder);
 
         // Helper logic: Notify Kitchen (Stub)
-        console.log(`[KITCHEN] Order ${orderId} FIRED.`);
+        logger.info(`Order FIRED - Kitchen notification sent (Stub)`, { orderId });
 
         return mapped;
     }

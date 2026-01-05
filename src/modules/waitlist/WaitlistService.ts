@@ -3,6 +3,9 @@ import { AuditService } from '../../core/audit/AuditService';
 import { AppError, ErrorCodes } from '../../core/errors/AppError';
 import prisma from '../../core/prisma';
 import { v4 as uuidv4 } from 'uuid';
+import { createLogger } from '../../core/logger';
+
+const logger = createLogger('WAITLIST_LEGACY');
 
 export class WaitlistService {
     private audit = AuditService.getInstance();
@@ -93,7 +96,10 @@ export class WaitlistService {
         } as WaitlistEntry;
 
         // Stub Notification
-        console.log(`[SMS STUB] Sending SMS to ${entry.guest.phoneNumber || 'Unknown Number'}: "Your table is ready!"`);
+        logger.info(`SMS sent (Stub) - Table is ready`, {
+            guestId: entry.guest.id,
+            phoneNumber: entry.guest.phoneNumber || 'Unknown'
+        });
 
         await this.audit.log({
             actorId, role: actorRole,

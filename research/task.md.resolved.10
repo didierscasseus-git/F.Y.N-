@@ -1,0 +1,55 @@
+# Build Tasks
+
+## INIT_BUILD_GUARDRAILS
+- [x] Create module registry
+- [x] Create environment config loader
+- [x] Create build manifest system
+- [x] Create standard error format
+- [x] Create structured logging format
+- [x] Verify stack lock compliance
+
+## CONNECTORS_LAYER_V1
+- [x] Create Postgres connector with pooling
+- [x] Create Pub/Sub publisher abstraction
+- [x] Create Pub/Sub subscriber abstraction
+- [x] Create Firebase Auth middleware
+- [x] Create BigQuery writer (batch)
+- [x] Create BigQuery writer (streaming)
+- [x] Create health checks for all connectors
+- [x] Verify stack lock compliance
+
+## DATA_MODEL_V1_POSTGRES
+- [x] Create Guest domain tables
+- [x] Create Operations domain tables
+- [x] Create Inventory domain tables
+- [x] Create Staff domain tables
+- [x] Create Analytics domain tables
+- [x] Create AR domain tables
+- [x] Create AuditLog table
+- [x] Add indexes and constraints
+- [x] Generate schema documentation
+
+## AUTH_RBAC_V1_FIREBASE
+- [x] Define user roles and permissions
+- [x] Create permission matrix
+- [x] Create field-level permission checks
+- [x] Create resource permission checks
+- [x] Create permission test suite
+- [x] Verify PRD compliance
+
+## AUDIT_LOG_ENGINE_V1
+- [x] Create audit log service
+- [x] Create mutation tracking utilities
+- [x] Create query endpoints for admin/manager
+- [x] Verify append-only enforcement
+- [x] Test audit logging
+
+## GUEST_PROFILE_MODULE_V1
+- [/] Create guest profile service
+- [ ] Create preferences service
+- [ ] Create allergies service
+- [ ] Create visits service
+- [ ] Create REST API endpoints
+- [ ] Add RBAC enforcement
+- [ ] Add audit logging
+- [ ] Verify PRD compliance

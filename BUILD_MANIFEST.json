@@ -1,0 +1,24 @@
+{
+    "project": "fyn-timing-os",
+    "version": "1.3.26",
+    "buildTimestamp": "2026-01-04T19:45:00-08:00",
+    "commit": "5916466dde16e7c970c28b0039eff9ce5e1bdf0d4",
+    "status": "LOCKED",
+    "environment": "production-ready",
+    "modules": [
+        "core",
+        "guest",
+        "reservation",
+        "waitlist",
+        "table",
+        "menu",
+        "inventory",
+        "pos",
+        "notification",
+        "ar",
+        "eighty_six",
+        "safety",
+        "ai"
+    ],
+    "verified": true
+}

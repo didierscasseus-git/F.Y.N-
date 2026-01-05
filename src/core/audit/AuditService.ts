@@ -1,5 +1,6 @@
 import { AuditLog, AuditLogSchema } from '../schema';
 import prisma from '../prisma';
+import { systemLogger } from '../logger';
 
 export class AuditService {
     private static instance: AuditService;
@@ -27,9 +28,9 @@ export class AuditService {
             await prisma.auditLog.create({
                 data: logEntryData
             });
-            console.log(`[AUDIT] logged ${entry.action} on ${entry.entity} (${entry.entityId})`);
+            systemLogger.debug(`Audit log persisted`, { action: entry.action, entity: entry.entity });
         } catch (error) {
-            console.error('[AuditService] Failed to persist log:', error);
+            systemLogger.error('Failed to persist audit log', error as Error);
         }
     }
 }

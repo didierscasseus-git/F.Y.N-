@@ -1,0 +1,88 @@
+# Build Tasks
+
+## INIT_BUILD_GUARDRAILS
+- [x] Create module registry
+- [x] Create environment config loader
+- [x] Create build manifest system
+- [x] Create standard error format
+- [x] Create structured logging format
+- [x] Verify stack lock compliance
+
+## CONNECTORS_LAYER_V1
+- [x] Create Postgres connector with pooling
+- [x] Create Pub/Sub publisher abstraction
+- [x] Create Pub/Sub subscriber abstraction
+- [x] Create Firebase Auth middleware
+- [x] Create BigQuery writer (batch)
+- [x] Create BigQuery writer (streaming)
+- [x] Create health checks for all connectors
+- [x] Verify stack lock compliance
+
+## DATA_MODEL_V1_POSTGRES
+- [x] Create Guest domain tables
+- [x] Create Operations domain tables
+- [x] Create Inventory domain tables
+- [x] Create Staff domain tables
+- [x] Create Analytics domain tables
+- [x] Create AR domain tables
+- [x] Create AuditLog table
+- [x] Add indexes and constraints
+- [x] Generate schema documentation
+
+## AUTH_RBAC_V1_FIREBASE
+- [x] Define user roles and permissions
+- [x] Create permission matrix
+- [x] Create field-level permission checks
+- [x] Create resource permission checks
+- [x] Create permission test suite
+- [x] Verify PRD compliance
+
+## AUDIT_LOG_ENGINE_V1
+- [x] Create audit log service
+- [x] Create mutation tracking utilities
+- [x] Create query endpoints for admin/manager
+- [x] Verify append-only enforcement
+- [x] Test audit logging
+
+## GUEST_PROFILE_MODULE_V1
+- [x] Create guest profile service
+- [x] Create preferences service
+- [x] Create allergies service
+- [x] Create visits service
+- [x] Create REST API endpoints
+- [x] Add RBAC enforcement
+- [x] Add audit logging
+- [x] Verify PRD compliance
+
+## MENU_AND_INGREDIENTS_MODULE_V1
+- [x] Create menu items service
+- [x] Create ingredients service
+- [x] Create menu-ingredient junction service
+- [x] Create REST API endpoints
+- [x] Enforce staff-only ingredients access
+- [x] Add RBAC enforcement
+- [x] Add audit logging
+- [x] Verify PRD compliance
+
+## RESERVATIONS_MODULE_V1
+- [x] Create reservation service
+- [x] Create REST API endpoints
+- [x] Add status management
+- [x] Add RBAC enforcement
+- [x] Add audit logging
+- [x] Verify PRD compliance
+
+## ALLERGY_CROSSCHECK_ENGINE_V1
+- [x] Create allergy crosscheck service
+- [x] Create validation endpoint
+- [x] Add severity-based alerts
+- [x] Add RBAC enforcement
+- [x] Verify PRD compliance
+
+## WAITLIST_MODULE_V1
+- [/] Create waitlist service
+- [ ] Create REST API endpoints
+- [ ] Add queue management
+- [ ] Add RBAC enforcement
+- [ ] Add audit logging
+- [ ] Verify PRD compliance

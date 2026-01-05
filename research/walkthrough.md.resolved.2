@@ -1,0 +1,83 @@
+# Notification Engine & Event Bus Walkthrough
+
+## Overview
+We have successfully implemented the **Notification Engine V1** and established a real-time event bus across core modules. This enables the system to react to events (Table changes, Reservations, Inventory low stock, POS payments) and generate notifications.
+
+## Changes
+
+### 1. Event Publishing Enabled
+We updated the following services to publish events to Google Cloud Pub/Sub:
+- **Table Service**: Publishes `table.events` (Created, State Updated).
+- **Reservation Service**: Publishes `reservation.events` (Created, Updated, Cancelled, Arrived, Seated).
+- **Inventory Service**: Publishes `inventory.events` (Updated, Low Stock, 86 Events).
+- *(POS Service was already publishing `pos.events`)*
+
+### 2. Notification Service
+Created `src/modules/notification` with:
+- **`initNotificationService`**:
+    - Creates `notifications` table in PostgreSQL.
+    - Automatically provisions Pub/Sub topics and subscriptions if missing.
+    - Sets up subscribers for: `pos.events`, `inventory.events`, `table.events`, `reservation.events`, `ar.events`.
+- **Event Handlers**:
+    - `POS: CHECK_PAID` -> Alert "Table Paid" (High Priority).
+    - `INVENTORY: LOW_STOCK` -> Alert "Low Stock" (Medium Priority).
+    - `TABLE: OUT_OF_SERVICE` -> Alert "Table Out of Service".
+    - `RESERVATION: NO_SHOW` -> Reminder "No Show Recorded".
+- **API**:
+    - `GET /api/v1/notifications`: List notifications (filter by read status).
+    - `POST /api/v1/notifications/:id/read`: Mark as read.
+
+### 3. Server Integration
+- Registered `NOTIFICATION_ENGINE` in `MODULE_REGISTRY`.
+- Mounted routes at `/api/v1/notifications`.
+- Initialized service on startup.
+
+## Verification
+
+### Automated
+1. **Build**: `npm run build` passed.
+2. **Startup**: Server should start and log `Created topic...` / `Created subscription...` for the new event streams.
+
+### Manual Test Steps
+
+#### 1. Low Stock Alert
+Trigger a low stock event by updating inventory:
+```bash
+# Get an inventory item ID
+ID=$(curl -h localhost:3000/api/v1/inventory | jq -r '.[0].id')
+
+# Update quantity to 0 (below reorder level)
+curl -X PUT http://localhost:3000/api/v1/inventory/$ID/adjust \
+  -H "Authorization: Bearer <AUTH_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"quantityChange": -100, "reason": "Test Low Stock"}'
+```
+**Expected Result**:
+- `inventory.events` published.
+- Notification created.
+- `GET /api/v1/notifications` returns the new alert.
+
+#### 2. Table State API
+```bash
+# Update table state to OUT_OF_SERVICE
+curl -X PUT http://localhost:3000/api/v1/tables/<TABLE_ID>/state \
+  -H "Authorization: Bearer <AUTH_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{"state": "OUT_OF_SERVICE"}'
+```
+**Expected Result**:
+- Notification "Table Out of Service" created.
+
+## Architecture
+
+```mermaid
+graph TD
+    POS[POS Service] -->|pos.events| PubSub
+    INV[Inventory Service] -->|inventory.events| PubSub
+    TBL[Table Service] -->|table.events| PubSub
+    RES[Reservation Service] -->|reservation.events| PubSub
+    
+    PubSub -->|Subscribe| NOTIF[Notification Service]
+    NOTIF -->|Persist| DB[(PostgreSQL)]
+    NOTIF -->|Publish| STR[notification.events]
+```

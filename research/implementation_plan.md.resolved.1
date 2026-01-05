@@ -1,0 +1,64 @@
+# Notification Engine Implementation Plan
+
+## Goal
+Create a `NOTIFICATION_ENGINE_V1` that aggregates events from across the system (`pos`, `inventory`, [table](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/table), `reservation`, [ar](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/core/logger.ts#81-84)) and emits/persists notifications.
+
+## Requirements
+- Subscribe to `pos.events`, `inventory.events`, `table.events`, `reservation.events`, `ar.events`.
+- Emit processed notifications to `notification.events`.
+- Persist notifications in database.
+
+## Proposed Changes
+
+### 1. Enable Event Publishing in Core Modules
+Existing modules currently do not publish events. We will add `Pub/Sub` publishers to them.
+
+#### [MODIFY] src/modules/table/table.service.ts
+- Initialize `publisher` for `table.events`.
+- Publish event on [createTable](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/table/table.service.ts#52-86) and [updateTableState](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/table/table.service.ts#127-185).
+
+#### [MODIFY] src/modules/reservation/reservation.service.ts
+- Initialize `publisher` for `reservation.events`.
+- Publish event on [create](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/table/table.service.ts#52-86), [update](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/guest/guest.service.ts#128-212), [cancel](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/reservation/reservation.service.ts#234-244), `arrive`, [seat](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/waitlist/waitlist.service.ts#239-249).
+
+#### [MODIFY] src/modules/inventory/inventory.service.ts
+- Initialize `publisher` for `inventory.events`.
+- Publish event on `updateStock`, `createItem`, `stockLow`.
+
+### 2. Create Notification Module
+
+#### [NEW] src/modules/notification/notification.service.ts
+- Initialize subscriber for all 5 topics.
+- Implement handler logic:
+    - `pos.events`: Alert on `CHECK_PAID` (if specifically configured)? Or just log.
+    - `inventory.events`: Alert on `STOCK_LOW`.
+    - `table.events`: Alert on specific state changes (e.g. `OUT_OF_SERVICE`).
+    - `reservation.events`: Alert on `NO_SHOW` or VIP arrival.
+    - `ar.events`: Log/Process.
+- Persist to `notifications` table.
+- Publish to `notification.events`.
+
+#### [NEW] src/modules/notification/notification.routes.ts
+- `GET /` - List notifications (filtered by read/unread, priority).
+- `POST /:id/read` - Mark as read.
+
+### 3. Database Schema
+
+#### [MODIFY] src/core/schema.ts
+- Add `Notification` schema.
+- Add `NotificationTypeEnum` and `NotificationPriorityEnum`.
+
+### 4. Registry & Server
+
+#### [MODIFY] src/core/registry.ts
+- Register `NOTIFICATION_ENGINE`.
+
+#### [MODIFY] src/server.ts
+- Mount notification routes.
+- Initialize notification service (subscribers).
+
+## Verification Plan
+1. **Build**: Ensure no cycle dependencies or type errors.
+2. **Manual Test**:
+   - Trigger [updateTableState](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/table/table.service.ts#127-185) -> Verify `table.events` published -> Verify `notification` created.
+   - CURL `GET /notifications` to see the record.

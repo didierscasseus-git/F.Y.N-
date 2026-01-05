@@ -1,0 +1,41 @@
+# POS Integration Layer Walkthrough
+
+## Overview
+Added a robust, provider-agnostic POS ingestion layer. This system receives webhooks, normalizes them into standard [PosEvent](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/core/schema.ts#249-250) structures, persists them for audit/evidence, and publishes them to Pub/Sub for consumers like the Table Status Suggestion Engine.
+
+## Architecture
+```mermaid
+graph LR
+    POS[POS Provider] -->|Webhook| API[POS Service]
+    API -->|Normalize| DB[(pos_events)]
+    API -->|Publish| PS[Pub/Sub: pos.events]
+    PS -.->|Future| INV[Inventory]
+    DB -->|Query Evidence| AI[Suggestion Engine]
+```
+
+## Changes
+- **New Module**: `src/modules/pos`
+- **Adapter**: `PosAdapter` interface and `MockAdapter` implementation.
+- **Service**: Ingests, validates, persists, and publishes events.
+- **Integration**: `TableStatusSuggestionEngine` now queries `pos_events` to boost suggestion confidence (e.g. "Check Paid" -> Suggest "Cleaning").
+- **Schema**: Added `PosEvent` to generic schema and `pos_events` table initialization.
+
+## Verification
+
+### Automated Check
+Build passed:
+```bash
+npm run build
+```
+
+### Manual Test (Curl)
+Triggers a mock POS event:
+```bash
+curl -X POST http://localhost:3000/api/v1/pos/webhook/mock \
+  -H "Content-Type: application/json" \
+  -d '{"eventType": "CHECK_PAID", "tableId": "TABLE_UUID_HERE"}'
+```
+
+### Evidence Verification
+1.  Check `pos_events` table for new record.
+2.  Run Suggestion Engine for the table; checks should show POS evidence with high weight (95 for CHECK_PAID).

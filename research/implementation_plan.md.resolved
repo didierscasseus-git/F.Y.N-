@@ -1,0 +1,19 @@
+# Build Verification & Lock Plan
+
+## Goal
+Verify the integrity of the codebase (`BUILD_VERIFICATION_V1`) and freeze the current state (`BUILD_LOCK_V1`).
+
+## Steps
+
+### 1. Build Verification
+- **Compilation**: Run full Type Check (`npm run build`).
+- **Sanity Check**: Verify no critical `TODO` or `FIXME` markers remain in critical paths ([src/server.ts](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/server.ts), `src/core`).
+- **Import Check**: Validate no circular dependency warnings (via `madge` if available or manual).
+
+### 2. Build Lock
+- **Manifest**: Create `BUILD_MANIFEST.json` in root or brain artifacts. 
+  - Content: Timestamp, Version, Active Modules, Git Hash (if git exists).
+- **Artifact**: Create `verification_report.md` summarizing the health of the system.
+
+## Verification
+- Explicit "SUCCESS" or "FAILURE" output.

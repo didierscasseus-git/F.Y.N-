@@ -1,0 +1,24 @@
+# Build Tasks
+
+## Core Infrastructure
+- [x] INIT_BUILD_GUARDRAILS
+- [x] CONNECTORS_LAYER_V1
+- [x] DATA_MODEL_V1_POSTGRES
+- [x] AUTH_RBAC_V1_FIREBASE
+- [x] AUDIT_LOG_ENGINE_V1
+
+## Application Modules
+- [x] GUEST_PROFILE_MODULE_V1
+- [x] MENU_AND_INGREDIENTS_MODULE_V1
+- [x] RESERVATIONS_MODULE_V1
+- [x] ALLERGY_CROSSCHECK_ENGINE_V1
+- [x] WAITLIST_MODULE_V1
+- [x] TABLES_AND_STATES_MODULE_V1
+
+## TABLE_STATUS_SUGGESTION_ENGINE_V1
+- [x] Create suggestion engine service
+- [x] Create evidence tracking
+- [x] Create conflict detection
+- [x] Create REST API endpoints
+- [x] Add RBAC enforcement
+- [x] Verify PRD compliance

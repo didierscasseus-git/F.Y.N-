@@ -1,0 +1,26 @@
+# Build Tasks
+
+## Core Infrastructure
+- [x] INIT_BUILD_GUARDRAILS
+- [x] CONNECTORS_LAYER_V1
+- [x] DATA_MODEL_V1_POSTGRES
+- [x] AUTH_RBAC_V1_FIREBASE
+- [x] AUDIT_LOG_ENGINE_V1
+
+## Application Modules
+- [x] GUEST_PROFILE_MODULE_V1
+- [x] MENU_AND_INGREDIENTS_MODULE_V1
+- [x] RESERVATIONS_MODULE_V1
+- [x] ALLERGY_CROSSCHECK_ENGINE_V1
+- [x] WAITLIST_MODULE_V1
+- [x] TABLES_AND_STATES_MODULE_V1
+- [x] TABLE_STATUS_SUGGESTION_ENGINE_V1
+- [x] INVENTORY_MODULE_V1
+- [x] EIGHTY_SIX_ENGINE_V1
+
+## ADD_86_ANALYTICS_V1
+- [/] Create 86 analytics service
+- [ ] Create BigQuery aggregation queries
+- [ ] Create REST API endpoints
+- [ ] Enforce Manager/Admin only access
+- [ ] Verify PRD compliance

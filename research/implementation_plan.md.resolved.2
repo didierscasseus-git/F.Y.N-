@@ -1,0 +1,51 @@
+# AR Backend Implementation Plan
+
+## Goal
+Implement the backend foundation for Augmented Reality features: `AR_SCAN_AND_MODEL_BACKEND_V1` and `AR_TABLE_ZONE_MAPPING_V1`. This enables the system to store 3D models of the space and map physical tables to AR anchors.
+
+## Proposed Changes
+
+### 1. Schema ([src/core/schema.ts](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/core/schema.ts))
+Add schemas for:
+- `ArModel`: Represents a user-uploaded or generated 3D model of the space/objects.
+- `ArAnchor`: Represents a spatial anchor point (e.g., Cloud Anchor ID) mapped to a specific `tableId`.
+
+### 2. AR Module (`src/modules/ar`)
+
+#### [NEW] src/modules/ar/ar.service.ts
+- **Publisher**: Initialize publisher for `ar.events`.
+- **`storeModel(input)`**: Save metadata for a 3D model.
+- **`createAnchor(input)`**: Map a `tableId` to a specific 3D position/rotation or Cloud Anchor ID.
+- **`getAnchors()`**: Retrieve all anchors to allow client devices to localize tables.
+- **`resolveZone(position)`**: (Optional V1) Check if a given position falls within a table's zone.
+
+#### [NEW] src/modules/ar/ar.routes.ts
+- `POST /models` - Register a new model.
+- `GET /anchors` - Get the spatial map.
+- `POST /anchors` - Map a table to an anchor.
+
+### 3. Integration
+- **Registry**: Add `AR_MODULE`.
+- **Server**: Mount `/api/v1/ar`.
+
+## Data Model
+**ArAnchor**:
+- [id](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/ai/suggestionEngine.service.ts#33-39) (UUID)
+- `tableId` (UUID) - FK to Tables
+- `cloudAnchorId` (String, optional) - For Google Cloud Anchors
+- `localTransform` (JSON) - Matrix for local coordinate systems
+- `createdAt`
+
+**ArModel**:
+- [id](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/ai/suggestionEngine.service.ts#33-39) (UUID)
+- `name` (String)
+- `url` (String) - Path to GLB/USDZ file
+- `version` (Number)
+
+## Verification Plan
+1. **Build**: Ensure types are correct.
+2. **Manual Test**:
+   - Create a Table.
+   - Call `POST /api/v1/ar/anchors` to map that table to a dummy Cloud Anchor ID.
+   - Call `GET /api/v1/ar/anchors` and verify the mapping.
+   - Verify `ar.events` is published and picked up by Notification Engine (log check).

@@ -1,0 +1,55 @@
+# POS Integration Layer Implementation Plan
+
+## Goal Description
+Create a `POS Integration Layer` to ingest events from various POS providers (starting with a Mock adapter), normalize them, and publish them to a Pub/Sub topic (`pos.events`). These events will supply evidence to the `Table Status Suggestion Engine` and potentially other consumers (Inventory, Analytics), ensuring that manual `OUT_OF_SERVICE` states are never overridden.
+
+## User Review Required
+> [!IMPORTANT]
+> **Database Schema Update**: A new table `pos_events` will be created to store normalized POS events for evidence tracking.
+> **Pub/Sub Topic**: A new topic `pos.events` will be used.
+
+## Proposed Changes
+
+### Core
+#### [MODIFY] [registry.ts](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/core/registry.ts)
+- Add `POS_INTEGRATION` to `MODULE_REGISTRY`.
+
+#### [MODIFY] [schema.ts](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/core/schema.ts)
+- Add `PosEventSchema` and `PosEventTypeEnum`.
+
+### POS Module
+#### [NEW] [posAdapter.interface.ts](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/pos/interfaces/posAdapter.interface.ts)
+- Define `PosAdapter` interface with `normalizeEvent`.
+
+#### [NEW] [mock.adapter.ts](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/pos/adapters/mock.adapter.ts)
+- Implement `MockPosAdapter` for testing.
+
+#### [NEW] [pos.service.ts](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/pos/pos.service.ts)
+- Handle webhook ingestion.
+- Validate and normalize payload.
+- Persist to DB (`pos_events`).
+- Publish to Pub/Sub (`pos.events`).
+
+#### [NEW] [pos.routes.ts](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/pos/pos.routes.ts)
+- `POST /api/v1/pos/webhook/:provider`
+
+### AI Module (Integration)
+#### [MODIFY] [suggestionEngine.service.ts](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/ai/suggestionEngine.service.ts)
+- Add `checkPosEvidence` function to query `pos_events`.
+- Update [generateSuggestion](file:///c:/Users/henry/OneDrive/Apps/F.Y.N%201.3.26/src/modules/ai/suggestionEngine.service.ts#40-120) to include POS evidence.
+
+## Verification Plan
+
+### Automated Tests
+- Run `npm run build` to verify type safety.
+
+### Manual Verification
+1.  **Ingest Webhook**: Send a POST request to `/api/v1/pos/webhook/mock` with a mock payload (e.g., `CHECK_PRINTED`).
+    ```bash
+    curl -X POST http://localhost:3000/api/v1/pos/webhook/mock \
+      -H "Content-Type: application/json" \
+      -d '{"eventType": "CHECK_PRINTED", "tableId": "TABLE_UUID", "timestamp": "2024-06-01T12:00:00Z"}'
+    ```
+2.  **Verify DB**: Check `pos_events` table for the new record.
+3.  **Verify Suggestion**: Trigger suggestion generation for the table and verify `PosEvidence` is included.
+4.  **Verify Out-of-Service**: Set a table to `OUT_OF_SERVICE`, send a POS event, and verify the state does NOT change (by checking `TableService` logic or suggestion output).

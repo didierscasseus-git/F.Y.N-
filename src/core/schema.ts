@@ -209,6 +209,61 @@ export const AuditLogSchema = z.object({
     reasonCode: z.string().optional()
 });
 
+export const PosEventTypeEnum = z.enum([
+    'CHECK_OPENED',
+    'ITEM_ADDED',
+    'ITEM_VOIDED',
+    'CHECK_PRINTED',
+    'PAYMENT_STARTED',
+    'CHECK_PAID',
+    'CHECK_CLOSED'
+]);
+
+export const PosEventSchema = z.object({
+    id: z.string().uuid(),
+    provider: z.string(),
+    externalEventId: z.string(),
+    eventType: PosEventTypeEnum,
+    tableId: z.string().optional(),
+    payload: z.record(z.any()), // Raw payload
+    timestamp: z.string().datetime(),
+    processedAt: z.string().datetime()
+});
+
+export const NotificationTypeEnum = z.enum(['SYSTEM', 'ALERT', 'REMINDER', 'MESSAGE']);
+export const NotificationPriorityEnum = z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']);
+
+export const NotificationSchema = z.object({
+    id: z.string().uuid(),
+    type: NotificationTypeEnum,
+    priority: NotificationPriorityEnum,
+    title: z.string(),
+    message: z.string(),
+    recipientRole: RoleEnum.optional(), // If broadcast to role
+    recipientId: z.string().optional(), // If specific user
+    read: z.boolean().default(false),
+    data: z.record(z.any()).optional(),
+    createdAt: z.string().datetime()
+});
+
+export const ArModelSchema = z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    url: z.string().url(),
+    format: z.enum(['GLB', 'USDZ', 'OBJ', 'PLY']),
+    uploadedBy: z.string(),
+    createdAt: z.string().datetime()
+});
+
+export const ArAnchorSchema = z.object({
+    id: z.string().uuid(),
+    tableId: z.string().uuid(),
+    cloudAnchorId: z.string().optional(),
+    localTransform: z.array(z.number()).length(16).optional(), // 4x4 matrix
+    confidence: z.number().min(0).max(1).default(1.0),
+    createdAt: z.string().datetime()
+});
+
 // --- TYPE INFERENCE ---
 export type Role = z.infer<typeof RoleEnum>;
 export type TableState = z.infer<typeof TableStateEnum>;
@@ -225,3 +280,10 @@ export type EightySixEvent = z.infer<typeof EightySixEventSchema>;
 export type Order = z.infer<typeof OrderSchema>;
 export type OrderItem = z.infer<typeof OrderItemSchema>;
 export type AuditLog = z.infer<typeof AuditLogSchema>;
+export type PosEvent = z.infer<typeof PosEventSchema>;
+export type PosEventType = z.infer<typeof PosEventTypeEnum>;
+export type Notification = z.infer<typeof NotificationSchema>;
+export type NotificationType = z.infer<typeof NotificationTypeEnum>;
+export type NotificationPriority = z.infer<typeof NotificationPriorityEnum>;
+export type ArModel = z.infer<typeof ArModelSchema>;
+export type ArAnchor = z.infer<typeof ArAnchorSchema>;
