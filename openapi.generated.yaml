@@ -1,0 +1,2084 @@
+openapi: 3.0.3
+info:
+  title: FYN Timing API
+  version: 1.0.0
+  description: Generated from registry.json (D1 endpoint/tool registry export).
+servers:
+- url: /
+tags:
+- name: ai
+- name: analytics
+- name: ar
+- name: audit
+- name: guest
+- name: inventory
+- name: menu
+- name: notification
+- name: order
+- name: pos
+- name: reservation
+- name: safety
+- name: system
+- name: table
+- name: waitlist
+components:
+  securitySchemes:
+    FirebaseBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Firebase ID token in Authorization: Bearer <token>.'
+  schemas:
+    GenericOk:
+      type: object
+      additionalProperties: true
+    Error:
+      type: object
+      additionalProperties: true
+paths:
+  /api/v1/ai/suggestions/{id}/review:
+    post:
+      tags:
+      - ai
+      summary: POST /api/v1/ai/suggestions/:id/review
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/ai/suggestions/generate/{tableId}:
+    post:
+      tags:
+      - ai
+      summary: POST /api/v1/ai/suggestions/generate/:tableId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: tableId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/ai/suggestions/pending:
+    get:
+      tags:
+      - ai
+      summary: GET /api/v1/ai/suggestions/pending
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/analytics/86/history:
+    get:
+      tags:
+      - analytics
+      summary: GET /api/v1/analytics/86/history
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+  /api/v1/analytics/86/metrics:
+    get:
+      tags:
+      - analytics
+      summary: GET /api/v1/analytics/86/metrics
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+  /api/v1/analytics/86/suggestions:
+    get:
+      tags:
+      - analytics
+      summary: GET /api/v1/analytics/86/suggestions
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+  /api/v1/ar/anchors:
+    get:
+      tags:
+      - ar
+      summary: GET /api/v1/ar/anchors
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+    post:
+      tags:
+      - ar
+      summary: POST /api/v1/ar/anchors
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/ar/models:
+    get:
+      tags:
+      - ar
+      summary: GET /api/v1/ar/models
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+    post:
+      tags:
+      - ar
+      summary: POST /api/v1/ar/models
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/audit/:
+    get:
+      tags:
+      - audit
+      summary: GET /api/v1/audit/
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: action
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: targetEntity
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: targetId
+        in: query
+        required: false
+        schema:
+          type: string
+  /api/v1/audit/actor/{actorId}:
+    get:
+      tags:
+      - audit
+      summary: GET /api/v1/audit/actor/:actorId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: actorId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+  /api/v1/audit/entity/{entityType}/{entityId}:
+    get:
+      tags:
+      - audit
+      summary: GET /api/v1/audit/entity/:entityType/:entityId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: entityId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: entityType
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: string
+  /api/v1/guests/:
+    post:
+      tags:
+      - guest
+      summary: POST /api/v1/guests/
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/guests/{guestId}/allergies/{allergyId}:
+    delete:
+      tags:
+      - guest
+      summary: DELETE /api/v1/guests/:guestId/allergies/:allergyId
+      responses:
+        '204':
+          description: No Content
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: allergyId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: guestId
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+      - guest
+      summary: PUT /api/v1/guests/:guestId/allergies/:allergyId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: allergyId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: guestId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                severity:
+                  type: string
+              additionalProperties: true
+  /api/v1/guests/{guestId}/preferences/{preferenceId}:
+    delete:
+      tags:
+      - guest
+      summary: DELETE /api/v1/guests/:guestId/preferences/:preferenceId
+      responses:
+        '204':
+          description: No Content
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: guestId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: preferenceId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/guests/{id}:
+    delete:
+      tags:
+      - guest
+      summary: DELETE /api/v1/guests/:id
+      responses:
+        '204':
+          description: No Content
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+      - guest
+      summary: GET /api/v1/guests/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+      - guest
+      summary: PUT /api/v1/guests/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/guests/{id}/allergies:
+    get:
+      tags:
+      - guest
+      summary: GET /api/v1/guests/:id/allergies
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+      - guest
+      summary: POST /api/v1/guests/:id/allergies
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/guests/{id}/preferences:
+    get:
+      tags:
+      - guest
+      summary: GET /api/v1/guests/:id/preferences
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+      - guest
+      summary: POST /api/v1/guests/:id/preferences
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/guests/search:
+    get:
+      tags:
+      - guest
+      summary: GET /api/v1/guests/search
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+  /api/v1/inventory/:
+    get:
+      tags:
+      - inventory
+      summary: GET /api/v1/inventory/
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+    post:
+      tags:
+      - inventory
+      summary: POST /api/v1/inventory/
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/inventory/86:
+    post:
+      tags:
+      - inventory
+      summary: POST /api/v1/inventory/86
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+              additionalProperties: true
+  /api/v1/inventory/86-engine/{id}/confirm:
+    post:
+      tags:
+      - inventory
+      summary: POST /api/v1/inventory/86-engine/:id/confirm
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/inventory/86-engine/{id}/reject:
+    post:
+      tags:
+      - inventory
+      summary: POST /api/v1/inventory/86-engine/:id/reject
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/inventory/86-engine/can-order/{menuItemId}:
+    get:
+      tags:
+      - inventory
+      summary: GET /api/v1/inventory/86-engine/can-order/:menuItemId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: menuItemId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/inventory/86-engine/pending:
+    get:
+      tags:
+      - inventory
+      summary: GET /api/v1/inventory/86-engine/pending
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/inventory/86-engine/scan:
+    post:
+      tags:
+      - inventory
+      summary: POST /api/v1/inventory/86-engine/scan
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/inventory/86/{id}/resolve:
+    post:
+      tags:
+      - inventory
+      summary: POST /api/v1/inventory/86/:id/resolve
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/inventory/86/active:
+    get:
+      tags:
+      - inventory
+      summary: GET /api/v1/inventory/86/active
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/inventory/{id}:
+    get:
+      tags:
+      - inventory
+      summary: GET /api/v1/inventory/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/inventory/{id}/adjust:
+    post:
+      tags:
+      - inventory
+      summary: POST /api/v1/inventory/:id/adjust
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/inventory/{id}/history:
+    get:
+      tags:
+      - inventory
+      summary: GET /api/v1/inventory/:id/history
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/menu/:
+    get:
+      tags:
+      - menu
+      summary: GET /api/v1/menu/
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+    post:
+      tags:
+      - menu
+      summary: POST /api/v1/menu/
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/menu/{id}:
+    get:
+      tags:
+      - menu
+      summary: GET /api/v1/menu/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+      - menu
+      summary: PUT /api/v1/menu/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/menu/{id}/ingredients:
+    get:
+      tags:
+      - menu
+      summary: GET /api/v1/menu/:id/ingredients
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+      - menu
+      summary: POST /api/v1/menu/:id/ingredients
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isOptional:
+                  type: string
+                quantityRequired:
+                  type: string
+                unit:
+                  type: string
+              additionalProperties: true
+  /api/v1/menu/{menuId}/ingredients/{ingredientId}:
+    delete:
+      tags:
+      - menu
+      summary: DELETE /api/v1/menu/:menuId/ingredients/:ingredientId
+      responses:
+        '204':
+          description: No Content
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: ingredientId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: menuId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/notifications/:
+    get:
+      tags:
+      - notification
+      summary: GET /api/v1/notifications/
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/notifications/{id}/read:
+    post:
+      tags:
+      - notification
+      summary: POST /api/v1/notifications/:id/read
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/orders/:
+    post:
+      tags:
+      - order
+      summary: POST /api/v1/orders/
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      description: Role-gated endpoint. Implementation may require headers such as
+        x-user-id / x-role.
+      parameters:
+      - name: x-role
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: x-user-id
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                guestId:
+                  type: string
+              additionalProperties: true
+  /api/v1/orders/{id}:
+    get:
+      tags:
+      - order
+      summary: GET /api/v1/orders/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      description: Role-gated endpoint. Implementation may require headers such as
+        x-user-id / x-role.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/orders/{id}/fire:
+    post:
+      tags:
+      - order
+      summary: POST /api/v1/orders/:id/fire
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      description: Role-gated endpoint. Implementation may require headers such as
+        x-user-id / x-role.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: x-role
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: x-user-id
+        in: header
+        required: true
+        schema:
+          type: string
+  /api/v1/orders/{id}/items:
+    post:
+      tags:
+      - order
+      summary: POST /api/v1/orders/:id/items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      description: Role-gated endpoint. Implementation may require headers such as
+        x-user-id / x-role.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: x-role
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: x-user-id
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notes:
+                  type: string
+                quantity:
+                  type: string
+              additionalProperties: true
+  /api/v1/pos/webhook/{provider}:
+    post:
+      tags:
+      - pos
+      summary: POST /api/v1/pos/webhook/:provider
+      responses:
+        '500':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/reservations/:
+    get:
+      tags:
+      - reservation
+      summary: GET /api/v1/reservations/
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: endDate
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+    post:
+      tags:
+      - reservation
+      summary: POST /api/v1/reservations/
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/reservations/{id}:
+    get:
+      tags:
+      - reservation
+      summary: GET /api/v1/reservations/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+      - reservation
+      summary: PUT /api/v1/reservations/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/reservations/{id}/arrived:
+    post:
+      tags:
+      - reservation
+      summary: POST /api/v1/reservations/:id/arrived
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/reservations/{id}/cancel:
+    post:
+      tags:
+      - reservation
+      summary: POST /api/v1/reservations/:id/cancel
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/reservations/{id}/seated:
+    post:
+      tags:
+      - reservation
+      summary: POST /api/v1/reservations/:id/seated
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/reservations/guest/{guestId}:
+    get:
+      tags:
+      - reservation
+      summary: GET /api/v1/reservations/guest/:guestId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: guestId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/safety/crosscheck:
+    post:
+      tags:
+      - safety
+      summary: POST /api/v1/safety/crosscheck
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menuItemId:
+                  type: string
+              additionalProperties: true
+  /api/v1/safety/crosscheck/batch:
+    post:
+      tags:
+      - safety
+      summary: POST /api/v1/safety/crosscheck/batch
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                menuItemIds:
+                  type: string
+              additionalProperties: true
+  /api/v1/safety/safe-menu/{guestId}:
+    get:
+      tags:
+      - safety
+      summary: GET /api/v1/safety/safe-menu/:guestId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: guestId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/tables/:
+    get:
+      tags:
+      - table
+      summary: GET /api/v1/tables/
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: minCapacity
+        in: query
+        required: false
+        schema:
+          type: string
+    post:
+      tags:
+      - table
+      summary: POST /api/v1/tables/
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/tables/{id}:
+    get:
+      tags:
+      - table
+      summary: GET /api/v1/tables/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/tables/{id}/history:
+    get:
+      tags:
+      - table
+      summary: GET /api/v1/tables/:id/history
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/tables/{id}/state:
+    put:
+      tags:
+      - table
+      summary: PUT /api/v1/tables/:id/state
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reservationId:
+                  type: string
+              additionalProperties: true
+  /api/v1/waitlist/:
+    get:
+      tags:
+      - waitlist
+      summary: GET /api/v1/waitlist/
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+    post:
+      tags:
+      - waitlist
+      summary: POST /api/v1/waitlist/
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+  /api/v1/waitlist/{id}:
+    get:
+      tags:
+      - waitlist
+      summary: GET /api/v1/waitlist/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      tags:
+      - waitlist
+      summary: PUT /api/v1/waitlist/:id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/waitlist/{id}/cancel:
+    post:
+      tags:
+      - waitlist
+      summary: POST /api/v1/waitlist/:id/cancel
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/waitlist/{id}/notify:
+    post:
+      tags:
+      - waitlist
+      summary: POST /api/v1/waitlist/:id/notify
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/waitlist/{id}/seat:
+    post:
+      tags:
+      - waitlist
+      summary: POST /api/v1/waitlist/:id/seat
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/waitlist/guest/{guestId}:
+    get:
+      tags:
+      - waitlist
+      summary: GET /api/v1/waitlist/guest/:guestId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - FirebaseBearer: []
+      parameters:
+      - name: guestId
+        in: path
+        required: true
+        schema:
+          type: string
+  /health:
+    get:
+      tags:
+      - system
+      summary: GET /health
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /health-connectors:
+    get:
+      tags:
+      - system
+      summary: GET /health-connectors
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericOk'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
